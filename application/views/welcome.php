@@ -1,17 +1,26 @@
 
-		<h1>
+		<h1 class="animated tdFadeInDown">
 			Mountain Climber
 		</h1>
 
-			<div class="subheading">
+			<div class="subheading animated tdStampIn">
 				<i class="fas fa-flag-checkered fa-2x"></i> <br/>
 				
-				Climb the mountain with your bicycle or on foot. <br/>
+				Race up the Hamilton mountain. <br/>
 				Submit your time. <br/>
-				Be a champ.<br/>
-				<hr>
+				Be a champ.
+				<div id="mountain">
+					<? $this->load->view('animations/mountain'); ?>
+				</div>
+				
 				<br/>
-				<a href="start" class="btn btn-primary">Start</a>
+				<br/>
 			</div>
+			
+			
 	
+	<script>
+	</script>
+	
+			
 	

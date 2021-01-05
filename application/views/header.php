@@ -12,6 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/darkly/bootstrap.min.css" integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://mountainclimber.ca/assets/tuesday.css">
 	
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -40,6 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		text-align: center;
 		margin: auto;
 	}
+	
 	
 	.subheading{
 		text-align: center;
@@ -93,7 +95,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </head>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <a class="navbar-brand" href="/"><img src="<?php echo base_url(); ?>assets/images/mountain-climber-white.png"></a>
+  <a class="navbar-brand" href="/"><img src="/assets/images/mountain-climber-white.png"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>

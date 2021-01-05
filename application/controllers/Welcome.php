@@ -21,4 +21,8 @@ class Welcome extends CI_Controller {
 		$this->load->view('help');
 		$this->load->view('footer');
 	}
+	
+	public function an() {
+		$this->load->view('animations/mountain');
+	}
 }
