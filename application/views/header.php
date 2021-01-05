@@ -13,12 +13,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/darkly/bootstrap.min.css" integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://mountainclimber.ca/assets/tuesday.css">
-	
+
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 	<link rel="manifest" href="/site.webmanifest">
-	
+
 	<meta property="og:title" content="Hamilton Mountain Climber">
 	<meta property="og:description" content="Race up the Hamilton mountain on foot or bicycle!">
 	<meta property="og:image" content="https://mountainclimber.ca/assets/images/mountain-climber.png">
@@ -30,7 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	  font-family: animal;
 	  src: url("/assets/fonts/animal.woff");
 	}
-	
+
 	@font-face {
 	  font-family: arcade;
 	  src: url("/assets/fonts/arcade.woff");
@@ -41,45 +41,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		text-align: center;
 		margin: auto;
 	}
-	
-	
+
+
 	.subheading{
 		text-align: center;
 		margin: auto;
 		font-size:1.5em;
 	}
-	
+
 	.container{
 		margin-top: 20px;
-		
+
 	}
-	
+
+	.center{
+		text-align: center;
+	}
 	.center-image{
 		text-align: center;
 		margin: auto;
 	}
-	
+
 	.center-image > img{
 		width: 80%;
 		height: auto;
 	}
-	
+
 	.box{
 		width: 80%;
 		padding: 12px;
 		margin-left: 10%;
-		
+
 	}
-	
+
 	.card{
 		width: 100%;
 	}
-	
+
 	.navbar-brand > img {
 		width: 180px;
 		height: auto;
 	}
-	
+
 	.vspace{
 		height: 200px;
 	}
@@ -107,15 +110,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           <span class="sr-only">(current)</span>
         </a>
       </li>
-      
+
       <li class="nav-item">
         <a class="nav-link" href="/about">About</a>
       </li>
-      
+
        <li class="nav-item">
         <a class="nav-link" href="/contact">Contact</a>
       </li>
-      
+
     </ul>
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="text" placeholder="Search">

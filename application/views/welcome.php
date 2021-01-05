@@ -5,22 +5,22 @@
 
 			<div class="subheading animated tdStampIn">
 				<i class="fas fa-flag-checkered fa-2x"></i> <br/>
-				
+
 				Race up the Hamilton mountain. <br/>
-				Submit your time. <br/>
-				Be a champ.
+				See how you rank against other racers.
 				<div id="mountain">
 					<? $this->load->view('animations/mountain'); ?>
 				</div>
-				
+
+				<div>
+					<a href="/leaderboard" class="btn btn-primary">Check out Rankings</a>
+				</div>
+
 				<br/>
 				<br/>
 			</div>
-			
-			
-	
+
+
+
 	<script>
 	</script>
-	
-			
-	
