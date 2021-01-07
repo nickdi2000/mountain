@@ -7,19 +7,33 @@ class Admin extends CI_Controller {
         {
             parent::__construct();
             $this->load->helper('url');
-						$this->load->model('racer_model');
+						$this->load->model(Array('racer_model', 'race_model'));
 						$this->load->library('session');
+
+						if(!isset($_SESSION['admin_id'])){
+							header('Location: /login');
+						}else{
+							$this->load->view('admin/nav');
+						}
 
         }
 
 	public function index()
 	{
-		$data['initials'] = $_SESSION['initials'] ?: '';
-		$data['racer_id'] = $_SESSION['racer_id'] ?: null;
+
+		$data['admin_data'] = $this->race_model->get_race_data(1);
+
 
 		$this->load->view('admin/header');
 		$this->load->view('admin/home', $data);
 		$this->load->view('admin/admin_footer');
+	}
+
+	public function save(){
+			$id = $this->race_model->update_race();
+			if($id != null){
+				header("Location: /admin/?success");
+			}
 	}
 
 	public function create_racer($initials){

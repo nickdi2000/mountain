@@ -38,15 +38,28 @@
 
 </style>
 
-
 <div id="clock">
 	<span v-if="racer_id > 0" id="session_info">
-			SESSION ID: {{racer_id}} | RACER: {{initials}} | STATUS: {{status}}
+			SESSION ID: {{racer_id}} | RACER: {{initials}} | STATUS: {{status}}<br/>
+			Start Time: {{timeBegan}}
 	</span>
 	<br>
 
   <i class="fas fa-clock fa-6x"></i><br />
   <br />
+
+	<div class="finished alert alert-success" v-if="status == 'finished'">
+			<i class="fas fa-flag-checkered fa-2x"></i><br/>
+				<h1>Finished!</h1>
+				<h2 class="animated tdSwingIn"><span class="badge badge-dark">Your Time: {{raceDuration}}</span> </h2>
+				<a href="/leaderboard">
+				<h2 class="animated tdSwingIn" style="animation-delay: 0.3s;"><span class="badge badge-dark">Check Your Rank </span> </h2>
+				</a>
+	</div>
+
+
+
+<span v-if="status != 'finished'">
 
   <div class="alert alert-dark" v-if="first">
   	<i class="fas fa-info-circle"></i>
@@ -58,6 +71,8 @@
   	<button class="btn btn-info" v-on:click="verifyUserLocation"><i class="fas fa-map-marker-alt"></i><br>Confirm My Starting Point</button>
   </div>
 
+
+
   <div class="spinner-border text-primary" role="status" v-if="loading">
 	  <span class="sr-only">Loading...</span>
   </div>
@@ -65,41 +80,63 @@
   <div class="alert" v-if="locationDisplay" >
   	<div class="alert alert-success" v-if="locationConfirmed"><i class='fas fa-check-circle'></i>
 			<br><h4>Location Verified!</h4>
-						<button class="btn btn-dark btn-sm" type="button" data-toggle="collapse" data-target="#learnMore" aria-expanded="false" aria-controls="learnMore">
+						<button class="btn btn-light btn-sm" type="button" data-toggle="collapse" data-target="#learnMore" aria-expanded="false" aria-controls="learnMore">
 							<i class="far fa-lightbulb"></i> &nbsp;Tip...
 						</button>
-
 						<div class="collapse" id="learnMore">
-						<div class="card card-body">
-							<span v-html="alertMessage" style="text-align:left;"></span>
+							<div class="card card-body">
+								<span v-html="alertMessage" style="text-align:left;"></span>
+							</div>
 						</div>
-</div>
+
 		</div>
   	<div class="alert alert-warning" v-else><i class="fas fa-exclamation-triangle"></i>Oops, location invalid.</div>
-  	<br/><br/>
+  	<br/>
 
   	<a v-if="!locationConfirmed" class="btn btn-light" href="/race/start">Try Again</a>
-
 		<div v-else class="center">
-			<input class="initials center" v-model="initials" name="initials" id="initials" maxlength="5" @keydown="preventSpecial($event)">
+			<small>Enter Name or Initials</small><br/>
+			<input class="initials center" v-model="initials" name="initials" id="initials" maxlength="5" @keydown="preventSpecial($event)" placeholder="ABC">
+			<p class="text-danger" v-if="name_error">Please Enter initials or a name, or anything! (max 5 characters)
+				<br/>You can add a full profile at the end of the race.</p>
 			<br/> <br/>
   		<button class="btn btn-primary" v-on:click="get_ready">Continue <i class="fas fa-arrow-circle-right"></i></button>
 		</div>
   </div>
 
   <div v-if="ready">
+			<button class="btn btn-sm" type="button" data-toggle="collapse" data-target="#learnMore" aria-expanded="false" aria-controls="learnMore">
+				<i class="far fa-lightbulb"></i> &nbsp;Tip...
+			</button><br/>
+			<div class="collapse" id="learnMore">
+				<div class="card card-body">
+					Start when you're ready to go!  If you start by accident, or need to reset, you may do so -- but the reset button will not be available once you leave the starting zone.
+					<br/>Hit stop when you are at the finish line.  You won't be able to hit stop before you are in the finish line zone. (keep location enabled).<br/>
+				</div>
+			</div>
+
 		  <span class="time">{{hour}}:{{min}}:{{sec}}:{{ms}}</span>
 		  <div class="btn-container">
-			<a id="start" class="btn btn-success btn-xlarge" v-on:click="start" v-if="!running"><i class="far fa-play-circle"></i> Start</a>
-			<a id="stop" class="btn btn-danger btn-xlarge" v-on:click="stop" v-if="running"><i class="fas fa-flag-checkered"></i><br>Stop</a>
-			<br> <br/>
+			<a id="start" class="btn btn-success btn-xlarge" v-on:click="start" v-if="status != 'running'"><i class="far fa-play-circle"></i> Start</a>
+			<a id="stop" class="btn btn-danger btn-xlarge" v-on:click="stop" v-else><i class="fas fa-flag-checkered"></i><br>Stop</a>
+			<br>
+			<br/>
 			<hr>
 			<a id="reset" class="btn btn-light">Reset</a>
 		  </div>
   </div>
 	<br>
-  {{distance}}
-  <div class="vspace"></div>
+  <small>Distance {{distance}}</small>
+
+
+</span>
+
+
+<div class="button-row">
+	<a href="/welcome/logout" class="btn btn-outline-light btn-sm" id="logout">Cancel</a>
+</div>
+
+<div class="vspace"></div>
 
 </div>
 
@@ -114,7 +151,7 @@ var clock = new Vue({
   data: {
   	first: true,
     time: '00:00:00.000',
-    timeBegan: null,
+    timeBegan: <? echo isset($time_started) ? "new Date('" . $time_started. "')" : "null"; ?>,
     timeStopped: null,
 	stoppedDuration: 0,
 	started: null,
@@ -125,10 +162,12 @@ var clock = new Vue({
 	ms: 0,
 	lat: 43.2448764,
 	lon: -79.8784467,
-
+  name_error: false,
 	initials: '<? echo $initials; ?>',
 	racer_id: <? echo $racer_id; ?>,
 	status: '<? echo $status; ?>',
+	raceDuration: '<? echo $duration; ?>',
+	raceData: <? echo json_encode($race_data); ?>,
 
 	startingPoint: false,
 
@@ -169,12 +208,15 @@ var clock = new Vue({
 
 		  	//verify if user is within x meters of starting point
 		  	if(clock.distance <= 200){
+					if(this.initials){ //if they already entered initials, skip to continue
+							this.get_ready();
+					}else{
 		  		clock.locationConfirmed = true;
-					clock.alertMessage = `Start when you are ready!  <br/>
-																<br/>You may reset if you are not ready, or start by accident (or drop your keys).
-																Once you leave the starting zone, the reset button will no longer be available.<br/>
-																<br/>Enter your initials to be entered onto the rank board.  After you finish the race, there will be an option to add more info."
+					clock.alertMessage = `Almost ready to go..
+																<br/>Enter a name or initalism (max 5 chars) so we can save your session.
+																<br/>At the end of the race, there will be an option to add more details to your profile.
 																`;
+					}
 
 		  	}else{
 		  		clock.alertMessage = "Sorry looks like you aren't at the starting point.  Need help getting there? <br> <a href='/help'>Help Me</a>";
@@ -192,8 +234,9 @@ var clock = new Vue({
 		}
   	},
 
+		//function for "continue" button
 		get_ready: function (){
-
+				document.getElementById('logout').innerHTML = 'Logout';
 
 				if(this.initials){
 					const url = "/admin/create_racer/" + this.initials;
@@ -204,7 +247,7 @@ var clock = new Vue({
 						 clock.racer_id = response.data;
 					 })
 				}	else{
-						alert('please enter name or initials');
+						this.name_error = true;
 				}
 
 
@@ -219,30 +262,23 @@ var clock = new Vue({
 
   	start: function (){
 
-  		if(this.running) return;
+		  	//	if(this.running) return;
+					this.update_status('running');
+					//set time if not exists
+				  if (this.timeBegan === null) {
+						this.reset();
+						this.setTimeBegan();//get time from server side
+				  }
 
-		  if (this.timeBegan === null) {
-				this.reset();
-				this.timeBegan = new Date();
-		  }
 
-		  if (this.timeStopped !== null) {
-				this.stoppedDuration += (new Date() - this.timeStopped);
-		  }
-
-			this.status = 'racing';
-			
-		  this.started = setInterval((e) => {
-		  		run_timer();
-		   }, 100);
-
-		  this.running = true;
   		},
 
 		  stop: function () {
 			  this.running = false;
 			  this.timeStopped = new Date();
 			  clearInterval(this.started);
+				this.setTimeEnded(); //write to DB
+				this.update_status('finished');
 			},
 
 		  reset: function () {
@@ -252,9 +288,51 @@ var clock = new Vue({
 				  this.timeBegan = null;
 				  this.timeStopped = null;
 				  this.time = "00:00:00.000";
-				}
+				},
+
+				update_status: function(status){
+					const url = "/race/update_racer_status/" + status;
+					axios.post(url).then(response => {
+						 console.log('status updated to: ' + status);
+						 clock.status = status;
+					 })
+
+				},
+
+				setTimeBegan: function(){
+					const url = "/race/set_time_started/";
+
+					axios.post(url).then(response => {
+						 if (this.timeStopped !== null) {
+							this.stoppedDuration += (response.data - this.timeStopped);
+							}
+							this.timeBegan = new Date(response.data);
+							console.log("timebegan : " + this.timeBegan);
+							this.started = setInterval((e) => {
+									run_timer();
+							 }, 100);
+							this.running = true;
+					 })
+
+				},
+
+				setTimeEnded: function(){
+						//const url = "/race/set_time_ended/" + this.hour + "/" + this.min + "/" + this.sec;
+						const url = "/race/set_time_ended"; //get time from server
+
+						axios.post(url).then(response => {
+							 console.log(response.data);
+								this.running = false;
+								this.time_ended = response.data.end_time;
+								this.raceDuration = response.data.duration;
+						 })
+
+				},
 
 		},
+
+
+
 
 		  onGeoError: function(error) {
 			let detailError;
@@ -273,15 +351,31 @@ var clock = new Vue({
 			}
 
 			console.log(`Error: ${detailError}`);
-		  }
+		},
+
+		mounted:function(){
+			console.log('status: ' + this.status);
+
+    	if (this.status == 'running'){
+				this.ready = true;
+				this.first = false;
+				this.running = true;
+
+				this.started = setInterval((e) => {
+						run_timer();
+				 }, 100);
+			}
+  	}
 
 });
-
+//end of VueJS
 
 function run_timer(){
 	  var currentTime = new Date()
 	  , timeElapsed = new Date(currentTime - clock.timeBegan - clock.stoppedDuration);
-	  clock	.hour = pad(timeElapsed.getUTCHours(), 2);
+
+		//console.log('timeLapsed: ' + timeElapsed);
+	  clock.hour = pad(timeElapsed.getUTCHours(), 2);
 	  clock.min = pad(timeElapsed.getUTCMinutes(), 2);
 	  clock.sec = pad(timeElapsed.getUTCSeconds(), 2);
 	  clock.ms = clock.ms >= 9 ? 0 : clock.ms + 1;

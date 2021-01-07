@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/darkly/bootstrap.min.css" integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
+	<link rel="stylesheet" href="/assets/darkly.css" >
 	<link rel="stylesheet" href="https://mountainclimber.ca/assets/tuesday.css">
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -36,7 +36,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	  src: url("/assets/fonts/arcade.woff");
 	}
 
-	h1{
+	h1,h3{
 		font-family: "animal";
 		text-align: center;
 		margin: auto;
@@ -83,6 +83,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		height: auto;
 	}
 
+
 	.vspace{
 		height: 200px;
 	}
@@ -121,8 +122,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search">
-      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+      <a class="btn btn-secondary my-2 my-sm-0" href="/welcome/logout">Logout</a>
     </form>
   </div>
 </nav>

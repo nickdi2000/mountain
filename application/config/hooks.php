@@ -11,3 +11,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	https://codeigniter.com/userguide3/general/hooks.html
 |
 */
+
+//application/config/hooks.php
+      $hook['post_controller_constructor'][] = array(
+          'function' => 'redirect_ssl',
+          'filename' => 'ssl.php',
+          'filepath' => 'hooks'
+       );

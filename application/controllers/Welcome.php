@@ -7,22 +7,37 @@ class Welcome extends CI_Controller {
         {
             parent::__construct();
             $this->load->helper('url');
+						$this->load->library('session');
+
         }
-        
+
 	public function index()
 	{
-		$this->load->view('header');
-		$this->load->view('welcome');
-		$this->load->view('footer');
+		if(isset($_SESSION['racer_id'])){
+			header("Location: /race/start");
+		}
+		$this->loadStack('welcome');
 	}
-	
+
 	public function help(){
-		$this->load->view('header');
-		$this->load->view('help');
-		$this->load->view('footer');
+			$this->loadStack('help');
 	}
-	
-	public function an() {
-		$this->load->view('animations/mountain');
+
+	public function about(){
+		$this->loadStack('about');
+	}
+
+
+	public function logout() {
+		$_SESSION = [];
+		$this->session->sess_destroy();
+		header("Location: /");
+
+	}
+
+	private function loadStack($page){
+		$this->load->view('header');
+		$this->load->view($page);
+		$this->load->view('footer');
 	}
 }

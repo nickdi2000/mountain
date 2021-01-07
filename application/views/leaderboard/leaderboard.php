@@ -8,55 +8,54 @@
 		padding: 20px;
 		text-align:center;
 		margin:auto;
-		
+
 	}
-	
+
 	td{
 		width: 33%;
 	}
-	
+
 	.arcadeTable{
 		left: 1%;
 		width: 100%;
 		font-family: arcade;
 		font-size: 2em;
-	
+
+	}
+
+	#id-<? echo $_SESSION['racer_id']; ?>{
+			background-color: #34347d;
+
 	}
 </style>
 
 
-<h1 style="font-family:arcade">RANKING</h1>
+<h1 style="font-family:arcade">RANKINGS</h1>
 
 <div class="roundBox">
-	
+
 	<table class="arcadeTable">
-		
-		<tr>
-			<td>1st</td>
-			<td>JRK</td>
-			<td>07:34:22</td>
-		</tr>
-		
-		<tr>
-			<td>2nd</td>
-			<td>EEF</td>
-			<td>08:34:22</td>
-		</tr>
-		
-		<tr>
-			<td>3rd</td>
-			<td>NED</td>
-			<td>09:34:22</td>
-		</tr>
-		
-		<tr>
-			<td>4th</td>
-			<td>GLI</td>
-			<td>10:34:22</td>
-		</tr>
-		
-		
-	
+
+			<? foreach($records as $i=>$rec) : ?>
+
+				<tr id="id-<? echo $rec['id']; ?>">
+					<td><? echo $nf->format($i+1); ?></td>
+					<td><? echo $rec['initials']; ?></td>
+					<td><? echo gmdate("H:i:s", $rec['duration']); ?></td>
+				</tr>
+
+			<? endforeach; ?>
+
+
 	</table>
 
+
+
 </div>
+<br/>
+
+<div class="center">
+	<a href="#" class="btn btn-dark">View All Records</a>
+</div>
+
+<div class="vspace"></div>

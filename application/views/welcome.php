@@ -12,15 +12,6 @@
 					<? $this->load->view('animations/mountain'); ?>
 				</div>
 
-				<div>
-					<a href="/leaderboard" class="btn btn-primary">Check out Rankings</a>
-				</div>
-
 				<br/>
 				<br/>
 			</div>
-
-
-
-	<script>
-	</script>
