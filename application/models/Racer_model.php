@@ -21,6 +21,12 @@ class Racer_model extends CI_Model {
         return $insert_id;
     }
 
+		    public function get_racer_data($id){
+		      $query = $this->db->get_where('racer_profile', array('id' => $id));
+		      return $query->row_array();
+		    }
+
+
     public function update_status($status = 'NEUTRAL'){
         $data['status'] = $status;
         $this->db->where('id', $_SESSION['racer_id']);

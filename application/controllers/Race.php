@@ -15,10 +15,11 @@ class Race extends CI_Controller {
 
 	public function start()
 	{
+		$data['start_time'] = isset($_SESSION['start_time']) ? $_SESSION['start_time'] : null;
+
 		$data['initials'] = isset($_SESSION['initials']) ? $_SESSION['initials'] : '';
 		$data['racer_id'] = isset($_SESSION['racer_id']) ? $_SESSION['racer_id'] : 0;
 		$data['status'] = isset($_SESSION['status']) ? $_SESSION['status'] : null;
-		$data['time_started'] = isset($_SESSION['time_started']) ? $_SESSION['time_started'] : null;
 		$data['duration'] = isset($_SESSION['duration']) ? $_SESSION['duration'] : null;
 
 		$data['race_data'] = $this->race_model->get_race_data(1); //hardcode 1 until made into SaaS
@@ -27,6 +28,30 @@ class Race extends CI_Controller {
 		$this->load->view('race/start', $data);
 		$this->load->view('footer');
 	}
+
+	/* for axios */
+
+	public function get_race_data(){
+		$race_id = 1; //hard-coded until SaaSified
+		echo json_encode($data['race_data'] = $this->race_model->get_race_data($race_id));
+	}
+
+		public function get_racer_data(){
+					/*$data['initials'] = isset($_SESSION['initials']) ? $_SESSION['initials'] : '';
+					$data['racer_id'] = isset($_SESSION['racer_id']) ? $_SESSION['racer_id'] : 0;
+					$data['status'] = isset($_SESSION['status']) ? $_SESSION['status'] : null;
+					$data['time_started'] = isset($_SESSION['time_started']) ? $_SESSION['time_started'] : null;
+					*/
+					if(isset($_SESSION['racer_id'])){
+						$data = $this->racer_model->get_racer_data($_SESSION['racer_id']);
+						$data['duration'] = isset($_SESSION['duration']) ? $_SESSION['duration'] : null;
+					}else{
+						$data['racer_id'] = 0;
+					}
+
+					echo json_encode($data);
+		}
+
 
 	public function update_racer_status($status){
 		$this->session->set_userdata('status', $status);

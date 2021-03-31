@@ -1,3 +1,11 @@
+<style>
+#mountain {
+  display: flex;
+  justify-content: center;
+	width:100%;
+
+}
+</style>
 
 		<h1 class="animated tdFadeInDown">
 			Mountain Climber

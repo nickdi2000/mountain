@@ -15,6 +15,11 @@
 						Competitors may fill out a profile including a message, email and link tied to their race record.  This may be used for
 						anything you see fit, including promoting your own self interests (business, art, etc.).
 					</p>
+
+					<p><i>Animation by Maxim Kulikov</i></p>
+					<p>
+						<a href="/" class="btn btn-light">Back</a>
+					</p>
 				  </div>
 				</div>
 

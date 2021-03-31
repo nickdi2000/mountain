@@ -39,8 +39,8 @@
 </style>
 
 <div id="clock">
-	<span v-if="racer_id > 0" id="session_info">
-			SESSION ID: {{racer_id}} | RACER: {{initials}} | STATUS: {{status}}<br/>
+	<span v-if="racerData.racer_id > 0" id="session_info">
+			SESSION ID: {{racerData.racer_id}} | RACER: {{racerData.initials}} | STATUS: {{racerData.status}}<br/>
 			Start Time: {{timeBegan}}
 	</span>
 	<br>
@@ -48,7 +48,7 @@
   <i class="fas fa-clock fa-6x"></i><br />
   <br />
 
-	<div class="finished alert alert-success" v-if="status == 'finished'">
+	<div class="finished alert alert-success" v-if="racerData.status == 'finished'">
 			<i class="fas fa-flag-checkered fa-2x"></i><br/>
 				<h1>Finished!</h1>
 				<h2 class="animated tdSwingIn"><span class="badge badge-dark">Your Time: {{raceDuration}}</span> </h2>
@@ -59,7 +59,8 @@
 
 
 
-<span v-if="status != 'finished'">
+
+<span v-if="racerData.status != 'finished'">
 
   <div class="alert alert-dark" v-if="first">
   	<i class="fas fa-info-circle"></i>
@@ -96,7 +97,7 @@
   	<a v-if="!locationConfirmed" class="btn btn-light" href="/race/start">Try Again</a>
 		<div v-else class="center">
 			<small>Enter Name or Initials</small><br/>
-			<input class="initials center" v-model="initials" name="initials" id="initials" maxlength="5" @keydown="preventSpecial($event)" placeholder="ABC">
+			<input class="initials center" v-model="racerData.initials" name="initials" id="initials" maxlength="5" @keydown="preventSpecial($event)" placeholder="ABC">
 			<p class="text-danger" v-if="name_error">Please Enter initials or a name, or anything! (max 5 characters)
 				<br/>You can add a full profile at the end of the race.</p>
 			<br/> <br/>
@@ -117,7 +118,7 @@
 
 		  <span class="time">{{hour}}:{{min}}:{{sec}}:{{ms}}</span>
 		  <div class="btn-container">
-			<a id="start" class="btn btn-success btn-xlarge" v-on:click="start" v-if="status != 'running'"><i class="far fa-play-circle"></i> Start</a>
+			<a id="start" class="btn btn-success btn-xlarge" v-on:click="start" v-if="racerData.status != 'running'"><i class="far fa-play-circle"></i> Start</a>
 			<a id="stop" class="btn btn-danger btn-xlarge" v-on:click="stop" v-else><i class="fas fa-flag-checkered"></i><br>Stop</a>
 			<br>
 			<br/>
@@ -126,7 +127,21 @@
 		  </div>
   </div>
 	<br>
-  <small>Distance {{distance}}</small>
+
+
+	<div class="dev" v-if="devMode" >
+  	<small>Distance {{distance}}</small>
+		<br/>
+		RacerData: <br/>
+		{{racerData}}
+		<br/>
+		Race Data:<br/>
+		{{raceData}}
+		<br/>
+
+		<span id="devlog"></span>
+
+  </div>
 
 
 </span>
@@ -142,16 +157,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
-
+<!-- production v: <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script> -->
 
 <script>
 
 var clock = new Vue({
   el: '#clock',
   data: {
+		devMode: true,
   	first: true,
     time: '00:00:00.000',
-    timeBegan: <? echo isset($time_started) ? "new Date('" . $time_started. "')" : "null"; ?>,
+    timeBegan: <? echo isset($start_time) ? "new Date('" . $start_time. "')" : "null"; ?>,
     timeStopped: null,
 	stoppedDuration: 0,
 	started: null,
@@ -163,12 +179,9 @@ var clock = new Vue({
 	lat: 43.2448764,
 	lon: -79.8784467,
   name_error: false,
-	initials: '<? echo $initials; ?>',
-	racer_id: <? echo $racer_id; ?>,
-	status: '<? echo $status; ?>',
 	raceDuration: '<? echo $duration; ?>',
-	raceData: <? echo json_encode($race_data); ?>,
-
+	raceData: {},
+	racerData: {},
 	startingPoint: false,
 
 	locationDisplay: false, //false for prod
@@ -183,6 +196,17 @@ var clock = new Vue({
   },
   methods: {
 
+		getRaceData(){
+					axios.get('/race/get_race_data').then(response => {
+						 this.raceData = response.data;
+					 })
+		},
+		getRacerData(){
+					axios.get('/race/get_racer_data').then(response => {
+						 console.log(response.data);
+						 this.racerData = response.data;
+					 })
+		},
   	verifyUserLocation: function(){
   		this.first = false;
   		this.loading = true;
@@ -195,21 +219,19 @@ var clock = new Vue({
   		let geolocation = navigator.geolocation;
 		if (geolocation) {
 		  geolocation.getCurrentPosition(function(position){
-		  	console.log("lat: " + position.coords.latitude);
-		  	console.log("long: " + position.coords.longitude);
-		  	console.log("thislat: " + clock.lat);
-		  	console.log("thislong: " + clock.lon);
+		  	console.log("my lat: " + position.coords.latitude);
+		  	console.log("my long: " + position.coords.longitude);
+		  	console.log("race lat: " + clock.lat);
+		  	console.log("race long: " + clock.lon);
 		  	clock.loading = false;
 
-
 		  	clock.distance = getDistance(position.coords.latitude, position.coords.longitude, clock.lat, clock.lon);
-		  	console.log('Distance: ' + clock.distance);
-		  	clock.locationDisplay = true;
-
 		  	//verify if user is within x meters of starting point
-		  	if(clock.distance <= 200){
-					if(this.initials){ //if they already entered initials, skip to continue
-							this.get_ready();
+		  	if(clock.distance <= 25){
+					clock.locationDisplay = true;
+
+					if('initials' in clock.racerData ){ //if they already entered initials, skip to continue
+							clock.get_ready();
 					}else{
 		  		clock.locationConfirmed = true;
 					clock.alertMessage = `Almost ready to go..
@@ -231,20 +253,21 @@ var clock = new Vue({
 		  clock.locationDisplay = false;
 		  clock.locationConfirmed = false;
 
-		}
+			}
   	},
 
 		//function for "continue" button
 		get_ready: function (){
 				document.getElementById('logout').innerHTML = 'Logout';
 
-				if(this.initials){
-					const url = "/admin/create_racer/" + this.initials;
+				if(this.racerData.initials){
+					const url = "/admin/create_racer/" + this.racerData.initials;
 					axios.post(url).then(response => {
+							console.log("racer created");
 						 console.log(response.data);
 						 clock.ready=true;
 		 				 clock.locationDisplay=false;
-						 clock.racer_id = response.data;
+						 clock.racerData.racer_id = response.data;
 					 })
 				}	else{
 						this.name_error = true;
@@ -354,9 +377,11 @@ var clock = new Vue({
 		},
 
 		mounted:function(){
-			console.log('status: ' + this.status);
+			console.log('status: ' + this.racerData.status);
+			this.getRaceData();
+			this.getRacerData();
 
-    	if (this.status == 'running'){
+    	if (this.racerData.status == 'running'){
 				this.ready = true;
 				this.first = false;
 				this.running = true;
@@ -386,7 +411,30 @@ function pad(num, size) {
     return s.substr(s.length-size);
 }
 
+function getDistance(lat1, lon1, lat2, lon2, unit) {
+	if ((lat1 == lat2) && (lon1 == lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		if (unit=="K") { dist = dist * 1.609344 }
+		if (unit=="N") { dist = dist * 0.8684 }
+		return dist;
+	}
+}
 
+//advanced for EARTH Radius
+/*
 function getDistance(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -402,10 +450,11 @@ function getDistance(lat1,lon1,lat2,lon2) {
   return d * 1000; //return meters
 }
 
+
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
-
+*/
 
 </script>
