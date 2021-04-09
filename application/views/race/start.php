@@ -9,7 +9,9 @@
 .time{
 	font-size: 3em;
 }
-
+h2{
+	font-family: "animal";
+}
 .btn-xlarge {
     padding: 18px 28px;
     font-size: 3em;
@@ -79,8 +81,8 @@
   </div>
 
   <div class="alert" v-if="locationDisplay" >
-  	<div class="alert alert-success" v-if="locationConfirmed"><i class='fas fa-check-circle'></i>
-			<br><h4>Location Verified!</h4>
+  	<div class="alert alert-success animated tdExpandIn" v-if="locationConfirmed"><i class='fas fa-check-circle'></i>
+			<br><h2>Location Verified!</h2>
 						<button class="btn btn-light btn-sm" type="button" data-toggle="collapse" data-target="#learnMore" aria-expanded="false" aria-controls="learnMore">
 							<i class="far fa-lightbulb"></i> &nbsp;Tip...
 						</button>
@@ -91,10 +93,20 @@
 						</div>
 
 		</div>
-  	<div class="alert alert-warning" v-else><i class="fas fa-exclamation-triangle"></i>Oops, location invalid.</div>
+  	<div class="animated tdExpandIn" v-if="distance > targetRadius">
+
+			<div class="alert alert-danger">
+				<h2><i class="fas fa-exclamation-triangle"></i> Oops, location invalid.</h2>
+				<p>Looks like you are {{distance.toFixed(2)}} miles away from the starting point.</p>
+					<a class="btn btn-primary" v-bind:href="'http://www.google.com/maps/place/' + raceData.starting_lat + ',' + raceData.starting_lon">View on Map <i class="fas fa-external-link-square-alt"></i></a>
+			</div>
+
+
+		</div>
   	<br/>
 
   	<a v-if="!locationConfirmed" class="btn btn-light" href="/race/start">Try Again</a>
+
 		<div v-else class="center">
 			<small>Enter Name or Initials</small><br/>
 			<input class="initials center" v-model="racerData.initials" name="initials" id="initials" maxlength="5" @keydown="preventSpecial($event)" placeholder="ABC">
@@ -164,7 +176,8 @@
 var clock = new Vue({
   el: '#clock',
   data: {
-		devMode: true,
+		devMode: 0,
+		targetRadius: 35,
   	first: true,
     time: '00:00:00.000',
     timeBegan: <? echo isset($start_time) ? "new Date('" . $start_time. "')" : "null"; ?>,
@@ -226,9 +239,11 @@ var clock = new Vue({
 		  	clock.loading = false;
 
 		  	clock.distance = getDistance(position.coords.latitude, position.coords.longitude, clock.lat, clock.lon);
+				clock.locationDisplay = true;
+
 		  	//verify if user is within x meters of starting point
-		  	if(clock.distance <= 25){
-					clock.locationDisplay = true;
+		  	if(clock.distance <= clock.targetRadius){
+
 
 					if('initials' in clock.racerData ){ //if they already entered initials, skip to continue
 							clock.get_ready();
@@ -259,9 +274,10 @@ var clock = new Vue({
 		//function for "continue" button
 		get_ready: function (){
 				document.getElementById('logout').innerHTML = 'Logout';
+				console.log("initials: " + this.racerData.initials);
 
 				if(this.racerData.initials){
-					const url = "/admin/create_racer/" + this.racerData.initials;
+					const url = "/race/create_racer/" + this.racerData.initials;
 					axios.post(url).then(response => {
 							console.log("racer created");
 						 console.log(response.data);
@@ -317,7 +333,7 @@ var clock = new Vue({
 					const url = "/race/update_racer_status/" + status;
 					axios.post(url).then(response => {
 						 console.log('status updated to: ' + status);
-						 clock.status = status;
+						 clock.racerData.status = status;
 					 })
 
 				},

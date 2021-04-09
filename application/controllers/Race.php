@@ -15,14 +15,14 @@ class Race extends CI_Controller {
 
 	public function start()
 	{
-		$data['start_time'] = isset($_SESSION['start_time']) ? $_SESSION['start_time'] : null;
+		//$data['start_time'] = isset($_SESSION['start_time']) ? $_SESSION['start_time'] : null;
 
-		$data['initials'] = isset($_SESSION['initials']) ? $_SESSION['initials'] : '';
-		$data['racer_id'] = isset($_SESSION['racer_id']) ? $_SESSION['racer_id'] : 0;
-		$data['status'] = isset($_SESSION['status']) ? $_SESSION['status'] : null;
+		//$data['initials'] = isset($_SESSION['initials']) ? $_SESSION['initials'] : '';
+		//$data['racer_id'] = isset($_SESSION['racer_id']) ? $_SESSION['racer_id'] : 0;
+		//$data['status'] = isset($_SESSION['status']) ? $_SESSION['status'] : null;
 		$data['duration'] = isset($_SESSION['duration']) ? $_SESSION['duration'] : null;
 
-		$data['race_data'] = $this->race_model->get_race_data(1); //hardcode 1 until made into SaaS
+		//$data['race_data'] = $this->race_model->get_race_data(1); //hardcode 1 until made into SaaS
 
 		$this->load->view('header');
 		$this->load->view('race/start', $data);
@@ -52,7 +52,20 @@ class Race extends CI_Controller {
 					echo json_encode($data);
 		}
 
-
+			public function create_racer($initials){
+				echo "hello";
+				return;
+				$racer_id =  $this->racer_model->create_racer($initials);
+				if($racer_id){
+					$this->session->set_userdata('racer_id', $racer_id);
+					//$this->session->set_userdata('initials', $initials);
+					//$this->session->set_userdata('status', 'ready');
+					echo $racer_id;
+				}else{
+					echo 'errorr';
+				}
+			}
+			
 	public function update_racer_status($status){
 		$this->session->set_userdata('status', $status);
 	 	echo $this->racer_model->update_status($status);

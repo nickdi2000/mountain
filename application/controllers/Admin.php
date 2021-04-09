@@ -36,17 +36,7 @@ class Admin extends CI_Controller {
 			}
 	}
 
-	public function create_racer($initials){
-		$racer_id =  $this->racer_model->create_racer($initials);
-		if($racer_id){
-			$this->session->set_userdata('racer_id', $racer_id);
-			$this->session->set_userdata('initials', $initials);
-			$this->session->set_userdata('status', 'ready');
-			echo $racer_id;
-		}else{
-			echo 'errorr';
-		}
-	}
+
 
 
 }

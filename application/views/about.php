@@ -16,7 +16,7 @@
 						anything you see fit, including promoting your own self interests (business, art, etc.).
 					</p>
 
-					<p><i>Animation by Maxim Kulikov</i></p>
+					<p><i>Animation by <a href="https://codepen.io/kojtr">Peter Feakes</a></i></p>
 					<p>
 						<a href="/" class="btn btn-light">Back</a>
 					</p>

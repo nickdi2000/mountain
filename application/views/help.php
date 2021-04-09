@@ -10,8 +10,7 @@
 				  <div class="card-header">Where?</div>
 				  <div class="card-body">
 					<p class="card-text">
-						Up the Hamilton mountain.  Specifically the Claremont access, starting at Claremont and Hunter. The end is at the top of the mountain just before it curves left.
-						The finish line is right when the right-hand 3-bar fence changes to the newly built fence.
+						Up/Down the Hamilton mountain.  Specifically the Claremont access, starting at Claremont and Hunter. The end is at the top of the mountain before it curves left when the dual bike/walking split becomes one.
 						<button class="btn">See Picture</button>
 						<br/><br/>
 
@@ -30,9 +29,8 @@
 				  <div class="card-header">How?</div>
 				  <div class="card-body">
 					<p class="card-text">
-						You will use the timer button down there.
 						You must have location enabled on your device so we can tell you are at the correct starting point.
-						When you get to the end, you will press "Finished".  (You may adjust for phone-fumbling and tinkering delays).
+						When you get to the end, you will press "Finished" (if not automatically detected).
 					</p>
 				  </div>
 				</div>
