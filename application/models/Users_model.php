@@ -21,7 +21,14 @@ class Users_model extends CI_Model {
       $params['user_id'] = $id;
       $query = $this->db->get_where('user_details', $params);
 
-      return $query->result_array();
+      return $query->row_array();
+    }
+
+    public function get_user_details_by_code($id){
+    //  $params['user_id'] = $id;
+      //$query = $this->db->get_where('user_details', $params);
+
+      return $query->row_array();
     }
 
 

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Mountain Climber - Race to the top of the Hamilton Mountain</title>
+	<title>TimeTrials -- Race against your peers in un-real time.</title>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -12,17 +12,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
 	<link rel="stylesheet" href="/assets/darkly.css" >
-	<link rel="stylesheet" href="https://mountainclimber.ca/assets/tuesday.css">
+	<link rel="stylesheet" href="https://timetrials.io/assets/tuesday.css">
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 	<link rel="manifest" href="/site.webmanifest">
 
-	<meta property="og:title" content="Hamilton Mountain Climber">
-	<meta property="og:description" content="Race up the Hamilton mountain on foot or bicycle!">
-	<meta property="og:image" content="https://mountainclimber.ca/assets/images/mountain-climber.png">
-	<meta property="og:url" content="https://mountainclimber.ca">
+	<meta property="og:title" content="TimeTrials.io">
+	<meta property="og:description" content="TimeTrials - Race against the clock and your peers!">
+	<meta property="og:image" content="https://timetrials.io/assets/images/mountain-climber.png">
+	<meta property="og:url" content="https://timetrials.io">
 
 	<style type="text/css">
 
@@ -99,7 +99,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </head>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <a class="navbar-brand" href="/"><img src="/assets/images/mountain-climber-white.png"></a>
+  <a class="navbar-brand" href="/"><? echo isset($title) ? $title : 'TimeTrials.io'; ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -110,6 +110,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <a class="nav-link" href="/">Home
           <span class="sr-only">(current)</span>
         </a>
+      </li>
+
+			<li class="nav-item">
+        <a class="nav-link" href="/race/start">Race!</a>
       </li>
 
       <li class="nav-item">
