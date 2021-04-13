@@ -21,6 +21,14 @@
 					<? $this->load->view('animations/mountain'); ?>
 				</div>
 
-				<br/>
-				<br/>
+				<div class="button-group">
+					<a href="/race/start" class="btn btn-success btn-lg"><i class="fas fa-stopwatch"></i> RACE! </a>
+					<br/><br/>
+					<a href="/leaderboard" class="btn btn-warning btn-sm"><i class="fas fa-list-ol"></i>  View Leaderboard</a>
+				</div>
+
+
+
 			</div>
+
+			<? $this->load->view('brand'); ?>

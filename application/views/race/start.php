@@ -41,7 +41,8 @@ h2{
 </style>
 
 <div id="clock">
-	<span v-if="racerData.racer_id > 0" id="session_info">
+	<span :if="racerData.racer_id > 0" id="session_info">
+			DISTANCE TO FINISH: {{distance}} |
 			SESSION ID: {{racerData.racer_id}} | RACER: {{racerData.initials}} | STATUS: {{racerData.status}}<br/>
 			Start Time: {{timeBegan}}
 	</span>
@@ -97,7 +98,7 @@ h2{
 
 			<div class="alert alert-danger">
 				<h2><i class="fas fa-exclamation-triangle"></i> Oops, location invalid.</h2>
-				<p>Looks like you are {{distance.toFixed(2)}} miles away from the starting point.</p>
+				<p>Looks like you are {{distance.toFixed(2)}} feet away from the starting point.</p>
 					<a class="btn btn-primary" v-bind:href="'http://www.google.com/maps/place/' + raceData.starting_lat + ',' + raceData.starting_lon">View on Map <i class="fas fa-external-link-square-alt"></i></a>
 			</div>
 
@@ -443,8 +444,10 @@ function getDistance(lat1, lon1, lat2, lon2, unit) {
 		dist = Math.acos(dist);
 		dist = dist * 180/Math.PI;
 		dist = dist * 60 * 1.1515;
-		if (unit=="K") { dist = dist * 1.609344 }
-		if (unit=="N") { dist = dist * 0.8684 }
+		//if (unit=="K") { dist = dist * 1.609344 }
+		//if (unit=="N") { dist = dist * 0.8684 }
+		var dist = dist * 5280; //convert to feet
+
 		return dist;
 	}
 }
