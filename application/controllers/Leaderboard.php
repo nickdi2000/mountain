@@ -15,7 +15,8 @@ class Leaderboard extends CI_Controller {
 
 	public function index()
 	{
-		$data['records'] = $this->racer_model->get_ranks();
+		$race_id = 1;
+		$data['records'] = $this->racer_model->get_ranks($race_id);
 
 		$locale = 'en_US';
 		$data['nf'] = new NumberFormatter($locale, NumberFormatter::ORDINAL);

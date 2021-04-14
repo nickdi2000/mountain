@@ -13,6 +13,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
 	<link rel="stylesheet" href="/assets/darkly.css" >
 	<link rel="stylesheet" href="https://timetrials.io/assets/tuesday.css">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Patua+One&display=swap" rel="stylesheet">
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -36,10 +38,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	  src: url("/assets/fonts/arcade.woff");
 	}
 
-	h1,h3{
-		font-family: "animal";
+	h1,h2,h3{
+		font-family: 'Patua One', cursive;
 		text-align: center;
 		margin: auto;
+	}
+
+	.btn-lg{
+		font-family: 'Patua One', cursive;
 	}
 
 

@@ -1,5 +1,5 @@
 <style>
-#mountain {
+#logo_container {
   display: flex;
   justify-content: center;
 	width:100%;
@@ -8,17 +8,16 @@
 }
 </style>
 
-		<h1 class="animated tdFadeInDown">
-			Mountain Climber
-		</h1>
+<div class="template" id="app">
+		<h2 class="animated tdFadeInDown">
+			{{title}}
+		</h2>
 
 			<div class="subheading animated tdStampIn">
 				<i class="fas fa-flag-checkered fa-2x"></i> <br/>
+          {{sub_heading}}
 
-				Race up the Hamilton mountain. <br/>
-				See how you rank against other racers.
-				<div id="mountain">
-					<? $this->load->view('animations/mountain'); ?>
+				<div id="logo_container">
 				</div>
 
 				<div class="button-group">
@@ -30,5 +29,25 @@
 
 
 			</div>
+</div>
+
 
 			<? $this->load->view('brand'); ?>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+
+      <script type="template" id="logo">
+        <? $this->load->view('animations/mountain'); ?>
+      </script>
+
+
+  <script>
+  var app = new Vue({
+    el: '#app',
+    data: <? echo json_encode($user_data); ?>,
+
+  });
+
+  $('#logo_container').html($('#logo').html());
+  </script>

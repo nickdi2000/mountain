@@ -17,7 +17,7 @@ class Main extends MY_Controller {
 	{
 
 			if(isset($this->data['g_user_data'])){
-				$data = $this->data['g_user_data'];
+				$data['user_data'] = $this->data['g_user_data'];
 				$this->load->view('header', $data);
 				$this->load->view('welcome', $data);
 			}else{

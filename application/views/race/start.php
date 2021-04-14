@@ -9,14 +9,12 @@
 .time{
 	font-size: 3em;
 }
-h2{
-	font-family: "animal";
-}
+
 .btn-xlarge {
     padding: 18px 28px;
     font-size: 3em;
     line-height: normal;
-    font-family: "animal";
+    font-family: 'Patua One', cursive;
     -webkit-border-radius: 8px;
        -moz-border-radius: 8px;
             border-radius: 8px;
@@ -41,22 +39,22 @@ h2{
 </style>
 
 <div id="clock">
-	<span :if="racerData.racer_id > 0" id="session_info">
+	<span v-if="racerData.id > 0" id="session_info">
 			DISTANCE TO FINISH: {{distance}} |
 			SESSION ID: {{racerData.racer_id}} | RACER: {{racerData.initials}} | STATUS: {{racerData.status}}<br/>
 			Start Time: {{timeBegan}}
 	</span>
 	<br>
 
-  <i class="fas fa-clock fa-6x"></i><br />
+  <i class="fas fa-clock fa-6x animated tdFadeInDown" style="animation-duration: 1.4s;"></i><br />
   <br />
 
 	<div class="finished alert alert-success" v-if="racerData.status == 'finished'">
 			<i class="fas fa-flag-checkered fa-2x"></i><br/>
 				<h1>Finished!</h1>
-				<h2 class="animated tdSwingIn"><span class="badge badge-dark">Your Time: {{raceDuration}}</span> </h2>
+				<h4 class="animated tdSwingIn"><span class="badge badge-light">Your Time: {{racerData.duration}}</span> </h4>
 				<a href="/leaderboard">
-				<h2 class="animated tdSwingIn" style="animation-delay: 0.3s;"><span class="badge badge-dark">Check Your Rank </span> </h2>
+				<h2 class="animated tdSwingIn" style="animation-delay: 0.3s;"><span class="badge badge-primary">Check Your Rank <i class="fas fa-sign-out-alt"></i></span> </h2>
 				</a>
 	</div>
 
@@ -65,14 +63,34 @@ h2{
 
 <span v-if="racerData.status != 'finished'">
 
-  <div class="alert alert-dark" v-if="first">
+<div class="select-race" v-if="!locationConfirmed">
+		<div>
+			<button v-if="races && current_race_id" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapser" aria-expanded="false" aria-controls="collapseExample">
+		    <i class="fas fa-caret-right"></i> &nbsp; {{getRaceName}}
+		  </button>
+
+		</div>
+		<div class="collapse" id="collapser">
+		  <div class="card card-body">
+				<small>Select a different race:</small>
+				<template v-for="race in races">
+					<button class="btn btn-warning btn-block" @click="setRace(race.id)">{{race.name}}</button>
+				</template>
+		  </div>
+		</div>
+</div>
+
+<hr/>
+
+  <div class="alert alert-dark animated tdFadeInUp" style="animation-duration: 1.2s;" v-if="first">
+
   	<i class="fas fa-info-circle"></i>
   	Before you can start, we will need to verify your location via GPS.
 		<br/>Make sure you have location enabled on your device.
   </div>
 
   <div class="locationDiv" v-if="first">
-  	<button class="btn btn-info" v-on:click="verifyUserLocation"><i class="fas fa-map-marker-alt"></i><br>Confirm My Starting Point</button>
+  	<button class="btn btn-info btn-lg" v-on:click="verifyUserLocation"><i class="fas fa-map-marker-alt"></i> Confirm My Starting Point</button>
   </div>
 
 
@@ -110,11 +128,10 @@ h2{
 
 		<div v-else class="center">
 			<small>Enter Name or Initials</small><br/>
-			<input class="initials center" v-model="racerData.initials" name="initials" id="initials" maxlength="5" @keydown="preventSpecial($event)" placeholder="ABC">
-			<p class="text-danger" v-if="name_error">Please Enter initials or a name, or anything! (max 5 characters)
-				<br/>You can add a full profile at the end of the race.</p>
+			<input class="initials center" v-on:keyup.enter="get_ready" v-model="racerData.initials" name="initials" id="initials" maxlength="5" @keydown="preventSpecial($event)" placeholder="ABC">
+			<p class="text-danger" v-if="name_error">Please enter initials or a name (max 5 characters)</p>
 			<br/> <br/>
-  		<button class="btn btn-primary" v-on:click="get_ready">Continue <i class="fas fa-arrow-circle-right"></i></button>
+  		<button class="btn btn-primary btn-lg" v-on:click="get_ready">Continue <i class="fas fa-arrow-circle-right"></i></button>
 		</div>
   </div>
 
@@ -164,7 +181,7 @@ h2{
 	<a href="/welcome/logout" class="btn btn-outline-light btn-sm" id="logout">Cancel</a>
 </div>
 
-<div class="vspace"></div>
+<div class="vspace" v-on:dblclick="dev=1"></div>
 
 </div>
 
@@ -178,10 +195,10 @@ var clock = new Vue({
   el: '#clock',
   data: {
 		devMode: 0,
-		targetRadius: 35,
+		targetRadius: 100, //how tight finish line must be (ft)
   	first: true,
     time: '00:00:00.000',
-    timeBegan: <? echo isset($start_time) ? "new Date('" . $start_time. "')" : "null"; ?>,
+    timeBegan: null,
     timeStopped: null,
 	stoppedDuration: 0,
 	started: null,
@@ -190,17 +207,16 @@ var clock = new Vue({
 	sec: 0,
 	min: 0,
 	ms: 0,
-	lat: 43.2448764,
-	lon: -79.8784467,
   name_error: false,
-	raceDuration: '<? echo $duration; ?>',
+	raceDuration: null, //for ending when race is done
 	raceData: {},
 	racerData: {},
+	races: [], //all the races for the users profile
+	current_race_id: 0,
 	startingPoint: false,
 
 	locationDisplay: false, //false for prod
 	locationConfirmed: false, //false for prod
-
 
 	alertMessage: "",
 	distance: 1000,
@@ -210,15 +226,32 @@ var clock = new Vue({
   },
   methods: {
 
+		getRaces(){
+			axios.get('/race/get_races').then(response => {
+				 this.races = response.data.races;
+				 this.current_race_id = response.data.current_race_id;
+				 this.getRaceData();
+			 })
+		},
+		setRace(id){
+			console.log('setting race..');
+			axios.get('/race/set_race/' + id).then(response => {
+				 clock.current_race_id = id;
+				 clock.getRaceData();
+				 $('#collapser').toggleClass('show');
+			 })
+		},
 		getRaceData(){
-					axios.get('/race/get_race_data').then(response => {
+					axios.get('/race/get_race_data/' + clock.current_race_id).then(response => {
 						 this.raceData = response.data;
 					 })
 		},
 		getRacerData(){
 					axios.get('/race/get_racer_data').then(response => {
+						 console.log("getting racer data..");
 						 console.log(response.data);
-						 this.racerData = response.data;
+						 this.racerData = response.data.racer_data;
+						 //this.timeBegan = response.data.start_time;
 					 })
 		},
   	verifyUserLocation: function(){
@@ -235,11 +268,11 @@ var clock = new Vue({
 		  geolocation.getCurrentPosition(function(position){
 		  	console.log("my lat: " + position.coords.latitude);
 		  	console.log("my long: " + position.coords.longitude);
-		  	console.log("race lat: " + clock.lat);
-		  	console.log("race long: " + clock.lon);
+		  	console.log("race lat: " + clock.raceData.starting_lat);
+		  	console.log("race long: " + clock.raceData.starting_lon);
 		  	clock.loading = false;
 
-		  	clock.distance = getDistance(position.coords.latitude, position.coords.longitude, clock.lat, clock.lon);
+		  	clock.distance = getDistance(position.coords.latitude, position.coords.longitude, clock.raceData.starting_lat, clock.raceData.starting_lon);
 				clock.locationDisplay = true;
 
 		  	//verify if user is within x meters of starting point
@@ -272,7 +305,7 @@ var clock = new Vue({
 			}
   	},
 
-		//function for "continue" button
+		//function for "continue" button and creates user in DB
 		get_ready: function (){
 				document.getElementById('logout').innerHTML = 'Logout';
 				console.log("initials: " + this.racerData.initials);
@@ -304,12 +337,13 @@ var clock = new Vue({
 
 		  	//	if(this.running) return;
 					this.update_status('running');
-					//set time if not exists
-				  if (this.timeBegan === null) {
+					this.setTimeBegan();//get time from server side
+					/*
+				  if (this.timeBegan === null || this.timeBegan == '0000-00-00 00:00:00') {
 						this.reset();
 						this.setTimeBegan();//get time from server side
 				  }
-
+					*/
 
   		},
 
@@ -346,7 +380,7 @@ var clock = new Vue({
 						 if (this.timeStopped !== null) {
 							this.stoppedDuration += (response.data - this.timeStopped);
 							}
-							this.timeBegan = new Date(response.data);
+							this.timeBegan = new Date(response.data);//get date from server, format it
 							console.log("timebegan : " + this.timeBegan);
 							this.started = setInterval((e) => {
 									run_timer();
@@ -394,8 +428,9 @@ var clock = new Vue({
 		},
 
 		mounted:function(){
-			console.log('status: ' + this.racerData.status);
-			this.getRaceData();
+			//console.log('status: ' + this.racerData.status);
+			this.getRaces();
+			//this.getRaceData();
 			this.getRacerData();
 
     	if (this.racerData.status == 'running'){
@@ -407,7 +442,17 @@ var clock = new Vue({
 						run_timer();
 				 }, 100);
 			}
-  	}
+  	},
+		computed: {
+			getRaceName(){
+				var ret = this.races.filter(
+			    function(data) {
+			      return data.id == clock.current_race_id;
+			    });
+
+					return ret[0].name;
+			}
+		}
 
 });
 //end of VueJS
@@ -452,28 +497,5 @@ function getDistance(lat1, lon1, lat2, lon2, unit) {
 	}
 }
 
-//advanced for EARTH Radius
-/*
-function getDistance(lat1,lon1,lat2,lon2) {
-  var R = 6371; // Radius of the earth in km
-  var dLat = deg2rad(lat2-lat1);  // deg2rad below
-  var dLon = deg2rad(lon2-lon1);
-  var a =
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-    Math.sin(dLon/2) * Math.sin(dLon/2)
-    ;
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  var d = R * c; // Distance in meters
-
-  return d * 1000; //return meters
-}
-
-
-function deg2rad(deg) {
-  return deg * (Math.PI/180)
-}
-
-*/
 
 </script>

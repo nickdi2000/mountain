@@ -8,7 +8,7 @@ class MY_Controller extends CI_Controller {
         {
             parent::__construct();
             $this->load->helper('url');
-            $this->load->model('users_model');
+            $this->load->model(Array('users_model', 'race_model'));
 
             //get subdomain
             $url = $_SERVER['HTTP_HOST'];
@@ -29,9 +29,15 @@ class MY_Controller extends CI_Controller {
                 //die();
               }
 
-
-
            }
+
+
+				public function get_all_races(){
+					$user_id = $this->data['g_user_data']['user_id'];
+					$return['races'] = $this->race_model->get_races($user_id);
+					$return['current_race_id'] = isset($_SESSION['current_race_id']) ? $_SESSION['current_race_id'] : $return['races'][0]['id']; //set to first race if not session-set yet
+					return $return;
+				}
 
 
 

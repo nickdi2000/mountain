@@ -56,6 +56,9 @@
 
 <div class="center">
 	<a href="#" class="btn btn-dark">View All Records</a>
+	<br/>
+	<br/>
+	<a href="/" class="btn btn-sm btn-sm"><i class="fas fa-arrow-circle-left"></i> Back</a>
 </div>
 
 <div class="vspace"></div>

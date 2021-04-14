@@ -51,8 +51,8 @@ class Racer_model extends CI_Model {
       return $query->result_array();
     }
 
-    public function get_ranks(){
-      $query = $this->db->query("select *, (end_time - start_time) duration from racer_profile where status = 'finished' order by duration asc;");
+    public function get_ranks($race_id){
+      $query = $this->db->query("select *, (end_time - start_time) duration from racer_profile where status = 'finished' AND race_id = $race_id order by duration asc;");
       return $query->result_array();
     }
 }
